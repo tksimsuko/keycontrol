@@ -50,7 +50,7 @@ function KeyControl(){
 		ctrl: "ctrl",
 		command: "command",
 		shift: "shift",
-		CmdOrCtrl: 'CmdOrCtrl'
+		CmdOrCtrl: 'cmdorctrl'
 	};
 
 	//登録したイベント
@@ -153,7 +153,7 @@ function KeyControl(){
 				//metakeys  other
 				metaKeyProp[metaKey] = true;
 			}
-
+			
 			return metaKeyProp;
 		}
 		function isKeyPressed(event, targetMetaKey, targetKey){
