@@ -1,7 +1,7 @@
 /**
  * keycontrol.js
  * 
- * version  1.6.0
+ * version  1.7.0
  *
  * Copyright 2016 tksimsuko.
  * Licensed under the MIT License:
@@ -10,7 +10,7 @@
  * bind function
  * @param target bind event target (window / key event dom)
  * @param type event type (keydown, keyup, keypress …)
- * @param metaKeySet: [alt ctrl command shift] array / CommandOrControl string (Mac -> command / windows -> ctrl)
+ * @param metaKeySet: [alt ctrl command shift] array / CmdOrCtrl string (Mac -> command / windows -> ctrl)
  * @param key: key String
  * @param callback 
  *
@@ -50,7 +50,7 @@ function KeyControl(){
 		ctrl: "ctrl",
 		command: "command",
 		shift: "shift",
-		CommandOrControl: 'commandorcontrol'
+		CmdOrCtrl: 'CmdOrCtrl'
 	};
 
 	//登録したイベント
@@ -132,12 +132,17 @@ function KeyControl(){
 				shift: false
 			};
 
+			if(typeof(metaKeys) === 'string'){
+				var metakeysString = metaKeys.toLowerCase();
+				metaKeys = metakeysString.split('+');
+			}
+
 			//metakeys : array
 			for(var i in metaKeys){
 				var metaKey = metaKeys[i].toLowerCase();
 
 				//metaKeys : CommandOrControl
-				if(metaKey === metaKeysProp.CommandOrControl){
+				if(metaKey === metaKeysProp.CmdOrCtrl){
 					if(window.navigator.userAgent.match(/Mac/)){
 						metaKeyProp.command = true;
 					}else{
@@ -148,6 +153,7 @@ function KeyControl(){
 				//metakeys  other
 				metaKeyProp[metaKey] = true;
 			}
+
 			return metaKeyProp;
 		}
 		function isKeyPressed(event, targetMetaKey, targetKey){
