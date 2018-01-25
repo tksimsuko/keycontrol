@@ -1,7 +1,7 @@
 /**
  * keycontrol.js
  * 
- * version  1.6.0
+ * version  1.7.0
  *
  * Copyright 2016 tksimsuko.
  * Licensed under the MIT License:
@@ -50,13 +50,14 @@ function KeyControl(){
 		ctrl: "ctrl",
 		command: "command",
 		shift: "shift",
-		CommandOrControl: 'commandorcontrol'
+		CmdOrCtrl: 'cmdorctrl'
 	};
 
 	//登録したイベント
 	var events = {};
 
 	return {
+		on: bindWindowKeyDown,
 		bind: bind,
 		isName: isName,
 		containsName: containsName,
@@ -104,7 +105,22 @@ function KeyControl(){
 				on();
 			}
 		};
+		function bindWindowKeyDown(metaKeySet, key, callback){
+			if(arguments.length === 2){
+				callback = key;
 
+				let keyList = metaKeySet.split('+');
+				if(keyList.length > 1){
+					metaKeySet = keyList.splice(0, keyList.length - 1);
+					key = keyList.splice(keyList.length - 1);
+				}else{
+					key = metaKeySet
+					metaKeySet = null;
+				}
+			}
+
+			bind(window, 'keydown', metaKeySet, key, callback);
+		}
 		function keyBind(event){
 			var keyCode = keyCodeProp[kcKey];
 			if(isKeyPressed(event, metaKeyProp, keyCode)) return kcCallback(event);
@@ -132,12 +148,17 @@ function KeyControl(){
 				shift: false
 			};
 
+			if(typeof(metaKeys) === 'string'){
+				var metakeysString = metaKeys.toLowerCase();
+				metaKeys = metakeysString.split('+');
+			}
+
 			//metakeys : array
 			for(var i in metaKeys){
 				var metaKey = metaKeys[i].toLowerCase();
 
 				//metaKeys : CommandOrControl
-				if(metaKey === metaKeysProp.CommandOrControl){
+				if(metaKey === metaKeysProp.CmdOrCtrl){
 					if(window.navigator.userAgent.match(/Mac/)){
 						metaKeyProp.command = true;
 					}else{
@@ -148,6 +169,7 @@ function KeyControl(){
 				//metakeys  other
 				metaKeyProp[metaKey] = true;
 			}
+			
 			return metaKeyProp;
 		}
 		function isKeyPressed(event, targetMetaKey, targetKey){
