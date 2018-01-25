@@ -10,7 +10,7 @@
  * bind function
  * @param target bind event target (window / key event dom)
  * @param type event type (keydown, keyup, keypress …)
- * @param metaKeySet: [alt ctrl command shift] array / CommandOrControl string (Mac -> command / windows -> ctrl)
+ * @param metaKeySet: [alt ctrl command shift] array / CmdOrCtrl string (Mac -> command / windows -> ctrl)
  * @param key: key String
  * @param callback 
  *
