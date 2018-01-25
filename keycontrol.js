@@ -1,7 +1,7 @@
 /**
  * keycontrol.js
  * 
- * version  1.7.0
+ * version  1.7.1
  *
  * Copyright 2016 tksimsuko.
  * Licensed under the MIT License:
@@ -13,18 +13,6 @@
  * @param metaKeySet: [alt ctrl command shift] array / CmdOrCtrl string (Mac -> command / windows -> ctrl)
  * @param key: key String
  * @param callback 
- *
- * all key prop
- * {
-	8:"backspace", 9:"tab", 13:"enter", 20:"capslock", 27:"esc", 32:"space", 33:"pageup", 34:"pagedown", 35:"end", 36:"home", 37:"left", 38:"up", 39:"right", 40:"down", 44:"printscreen", 45:"insert", 46:"delete", 
-	48:0, 49:1, 50:2, 51:3, 52:4, 53:5, 54:6, 55:7, 56:8, 57:9, 
-	58:":", 59:";", 60:"<", 61:"=", 62:">", 63:"?", 64:"@", 
-	65:"a", 66:"b", 67:"c", 68:"d", 69:"e", 70:"f", 71:"g", 72:"h", 73:"i", 74:"j", 75:"k", 76:"l", 77:"m", 78:"n", 79:"o", 80:"p", 81:"q", 82:"r", 83:"s", 84:"t", 85:"u", 86:"v", 87:"w", 88:"x", 89:"y", 90:"z", 
-	96:0, 97:1, 98:2, 99:3, 100:4, 101:5, 102:6, 103:7, 104:8, 105:9, 
-	109:"-", 110:".", 111:"/", 
-	112:"F1", 113:"F2", 114:"F3", 115:"F4", 116:"F5", 117:"F6", 118:"F7", 119:"F8", 120:"F9", 121:"F10", 122:"F11", 123:"F12", 
-	144:"numlock", 145:"scrolllock", 160:"^", 161:"!", 162:"\"", 163:"#", 164:"$", 165:"%", 166:"&", 167:"_", 168:"(", 169:")", 170:"*", 171:"+", 172:"|", 173:"-", 174:"{", 175:"}", 176:"~", 188:",", 190:".", 191:"/", 192:"`", 219:"[", 221:"]", 222:"'"
- * }
 */
 function KeyControl(){
 	//key code propertie
@@ -105,22 +93,6 @@ function KeyControl(){
 				on();
 			}
 		};
-		function bindWindowKeyDown(metaKeySet, key, callback){
-			if(arguments.length === 2){
-				callback = key;
-
-				let keyList = metaKeySet.split('+');
-				if(keyList.length > 1){
-					metaKeySet = keyList.splice(0, keyList.length - 1);
-					key = keyList.splice(keyList.length - 1);
-				}else{
-					key = metaKeySet
-					metaKeySet = null;
-				}
-			}
-
-			bind(window, 'keydown', metaKeySet, key, callback);
-		}
 		function keyBind(event){
 			var keyCode = keyCodeProp[kcKey];
 			if(isKeyPressed(event, metaKeyProp, keyCode)) return kcCallback(event);
@@ -172,6 +144,7 @@ function KeyControl(){
 			
 			return metaKeyProp;
 		}
+
 		function isKeyPressed(event, targetMetaKey, targetKey){
 			return isMetaKey(event, targetMetaKey) && isKey(event, targetKey);
 		}
@@ -199,6 +172,22 @@ function KeyControl(){
 			if(targetKeyCode && (targetKeyCode !== keyCode)) return false;
 			return true;
 		}
+	}
+	function bindWindowKeyDown(metaKeySet, key, callback){
+		if(arguments.length === 2){
+			callback = key;
+
+			let keyList = metaKeySet.split('+');
+			if(keyList.length > 1){
+				metaKeySet = keyList.splice(0, keyList.length - 1);
+				key = keyList.splice(keyList.length - 1);
+			}else{
+				key = metaKeySet
+				metaKeySet = null;
+			}
+		}
+
+		return bind(window, 'keydown', metaKeySet, key, callback);
 	}
 
 	// key　code 判定
