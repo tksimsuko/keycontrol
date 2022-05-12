@@ -48,6 +48,7 @@ function keycontrol(){
 			///// 宣言呼び出し
 			return apply(param);
 		case 2:
+			///// input要素 キー入力表示イベント
 			inputTyped(arguments[0], arguments[1]);
 			break;
 		case 3:
