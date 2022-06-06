@@ -34,7 +34,8 @@ function keycontrol(){
 		ctrl: "ctrl",
 		command: "command",
 		shift: "shift",
-		CmdOrCtrl: 'cmdorctrl'
+		CmdOrCtrl: 'cmdorctrl',
+		CommandOrControl: 'commandorcontrol'
 	};
 
 	///// initialize
@@ -48,8 +49,8 @@ function keycontrol(){
 			///// 宣言呼び出し
 			return apply(param);
 		case 2:
-			///// input要素 キー入力表示イベント
-			inputTyped(arguments[0], arguments[1]);
+			///// input要素 キー入力表示
+			return inputTyped(arguments[0], arguments[1]);
 			break;
 		case 3:
 			///// bind 省略呼び出し
@@ -266,7 +267,7 @@ function keycontrol(){
 				let metaKey = metaKeys[i].toLowerCase();
 
 				//metaKeys : CommandOrControl
-				if(metaKey === metaKeysProp.CmdOrCtrl){
+				if(metaKey === metaKeysProp.CmdOrCtrl || metaKey === metaKeysProp.CommandOrControl){
 					if(window.navigator.userAgent.match(/Mac/)){
 						metaKeyProp.command = true;
 					}else{
@@ -328,6 +329,10 @@ function keycontrol(){
 
 	function inputTyped(target, onTyped){	
 		////////// initialize
+		let inputTypedValue = {
+			value: '',
+			cmd: {}
+		}
 		let inputElement;
 		if(target.nodeName){
 			inputElement = target;
@@ -335,26 +340,27 @@ function keycontrol(){
 			inputElement = document.querySelector(target);
 		}
 		
-		inputElement.addEventListener('keydown', function(event){
-			//エラーハンドリング
-			let checkCmd = getKeyCommandFromInputEvent(event);
-			if(!checkCmd.key){
-				showKeyCommandToInputText(event);
-				return;
-			}
-	
+		inputElement.addEventListener('keydown', function(event){	
 			//inputに入力したキーを表示
 			showKeyCommandToInputText(event);
-	
-			let cmd = generateCommand(event.target.value);
+			
+			inputTypedValue.value = event.target.value;
+			inputTypedValue.cmd = generateCommand(event.target.value);
+
 			if(onTyped){
-				onTyped(cmd);
+				onTyped(inputTypedValue.value, inputTypedValue.cmd);
 			}
 	
 			event.preventDefault();
 			event.stopPropagation();
 		});
-	
+		
+		return {
+			get: () => {
+				return inputTypedValue;
+			}
+		};
+
 		////////// function
 		// input要素にタイプしたコマンドを取得する
 		function getKeyCommandFromInputEvent(event){
@@ -384,9 +390,6 @@ function keycontrol(){
 		function showKeyCommandToInputText(event){
 			let cmd = getKeyCommandFromInputEvent(event);
 			event.target.value = generateCommandString(cmd);
-	
-			event.preventDefault();
-			return false;
 		}
 		function generateCommandString(cmd){
 			if(!cmd){
